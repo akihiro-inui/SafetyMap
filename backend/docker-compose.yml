@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "api"
+    restart: always
+    ports:
+      - "80:80"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:80/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - backend
+
+  mongodb:
+    image: mongo
+    container_name: "mongo"
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: mongo
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  mongodb_data:

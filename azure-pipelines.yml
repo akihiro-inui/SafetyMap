@@ -6,8 +6,8 @@ pr:
   drafts: false
 
 stages:
-  - stage: build_and_test_frontend
-    displayName: Build and Test Frontend
+  - stage: test_and_build_frontend
+    displayName: Test and Build Frontend
     pool:
       vmImage: 'macos-latest'
 
@@ -28,6 +28,7 @@ stages:
           set -x
           npm install -g expo-cli
           npm install -g eas-cli
+          npm install -g expo-updates
         displayName: Install pipeline dependencies
 
       - bash: |
@@ -36,29 +37,34 @@ stages:
         displayName: Login to expo cli
 
       - bash: yarn install --frozen-lockfile
-        displayName: Yarn install
+        displayName: Install libraries
+        workingDirectory: '$(Build.Repository.LocalPath)/frontend'
 
-      # - bash: |
-      #     set -x
-      #     yarn test:ci
-      #   displayName: Run Unit Tests
+      - bash: |
+          set -x
+          yarn test --watchAll=false
+        displayName: Run Unit Tests
+        workingDirectory: '$(Build.Repository.LocalPath)/frontend'
 
       - bash: |
           cd frontend
-          eas build --platform ios --profile buildForDetoxTesting --local
-        displayName: Build .app for UI Testing on Azure MacOS Agent
+          eas build --platform all --profile preview --local
+        displayName: Build iOS and Android for UI Testing on Azure MacOS Agent
+        workingDirectory: '$(Build.Repository.LocalPath)/frontend'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
       - bash: |
           cd frontend
-          eas build --platform ios --non-interactive --no-wait
-        displayName: Run Build on EAS to have .app available on website too
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+          eas build --platform all --non-interactive --no-wait
+        displayName: Run Build on EAS to have .app available on website
+        workingDirectory: '$(Build.Repository.LocalPath)/frontend'
+        condition: and(succeeded(), eq(variables['BYuild.SourceBranch'], 'refs/heads/main'))
 
       - bash: |
           cd frontend
           expo publish --non-interactive
         displayName: Publish app to expo default channel
+        workingDirectory: '$(Build.Repository.LocalPath)/frontend'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
       - task: PublishTestResults@2

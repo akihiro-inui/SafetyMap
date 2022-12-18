@@ -1,19 +1,65 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - main
 
-pool:
-  vmImage: ubuntu-latest
+pr:
+  autoCancel: true
+  drafts: false
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+stages:
+  - stage: build_and_test_frontend
+    displayName: Build and Test Frontend
+    pool:
+      vmImage: 'macos-latest'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    jobs:
+    - job: build
+      displayName: Build
+
+      steps:
+      - checkout: self
+        clean: true
+
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '16.x'
+        displayName: Install Node.js
+
+      - bash: | 
+          set -x
+          npm install -g expo-cli
+          npm install -g eas-cli
+        displayName: Install pipeline dependencies
+
+      - bash: |
+          set -x
+          expo login -u $(SHARED_EXPO_USERNAME) -p $(SHARED_EXPO_PASSWORD) --non-interactive
+        displayName: Login to expo cli
+
+      - bash: yarn install --frozen-lockfile
+        displayName: Yarn install
+
+      # - bash: |
+      #     set -x
+      #     yarn test:ci
+      #   displayName: Run Unit Tests
+
+      - bash: |
+          eas build --platform ios --profile buildForDetoxTesting --local
+        displayName: Build .app for UI Testing on Azure MacOS Agent
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+      - bash: |
+          eas build --platform ios --non-interactive --no-wait
+        displayName: Run Build on EAS to have .app available on website too
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+      - bash: |
+          expo publish --non-interactive
+        displayName: Publish app to expo default channel
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+      - task: PublishTestResults@2
+        condition: succeededOrFailed()
+        inputs:
+          testRunner: JUnit
+          testResultsFiles: '**/junit.xml'

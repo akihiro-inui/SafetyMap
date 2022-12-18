@@ -47,7 +47,7 @@ stages:
         workingDirectory: '$(Build.Repository.LocalPath)/frontend'
 
       - bash: |
-          eas build --platform all --non-interactive --no-wait
+          eas build --platform all --non-interactive
         displayName: Build iOS and Android for UI Testing on Azure MacOS Agent
         workingDirectory: '$(Build.Repository.LocalPath)/frontend'
         condition: and(succeeded(), eq(variables['BYuild.SourceBranch'], 'refs/heads/main'))

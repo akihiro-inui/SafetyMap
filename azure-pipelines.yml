@@ -37,7 +37,7 @@ stages:
         displayName: Login to expo cli
 
       - bash: yarn install --frozen-lockfile
-        displayName: Yarn install
+        displayName: Install libraries
         workingDirectory: '$(Build.Repository.LocalPath)/frontend'
 
       - bash: |
@@ -48,15 +48,15 @@ stages:
 
       - bash: |
           cd frontend
-          eas build --platform ios --profile preview --local
-        displayName: Build .app for UI Testing on Azure MacOS Agent
+          eas build --platform all --profile preview --local
+        displayName: Build iOS and Android for UI Testing on Azure MacOS Agent
         workingDirectory: '$(Build.Repository.LocalPath)/frontend'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
       - bash: |
           cd frontend
-          eas build --platform ios --non-interactive --no-wait
-        displayName: Run Build on EAS to have .app available on website too
+          eas build --platform all --non-interactive --no-wait
+        displayName: Run Build on EAS to have .app available on website
         workingDirectory: '$(Build.Repository.LocalPath)/frontend'
         condition: and(succeeded(), eq(variables['BYuild.SourceBranch'], 'refs/heads/main'))
 

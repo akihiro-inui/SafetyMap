@@ -47,21 +47,12 @@ stages:
         workingDirectory: '$(Build.Repository.LocalPath)/frontend'
 
       - bash: |
-          cd frontend
-          eas build --platform all --profile preview
-        displayName: Build iOS and Android for UI Testing on Azure MacOS Agent
-        workingDirectory: '$(Build.Repository.LocalPath)/frontend'
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-
-      - bash: |
-          cd frontend
           eas build --platform all --non-interactive --no-wait
-        displayName: Run Build on EAS to have .app available on website
+        displayName: Build iOS and Android for UI Testing on Azure MacOS Agent
         workingDirectory: '$(Build.Repository.LocalPath)/frontend'
         condition: and(succeeded(), eq(variables['BYuild.SourceBranch'], 'refs/heads/main'))
 
       - bash: |
-          cd frontend
           expo publish --non-interactive
         displayName: Publish app to expo default channel
         workingDirectory: '$(Build.Repository.LocalPath)/frontend'

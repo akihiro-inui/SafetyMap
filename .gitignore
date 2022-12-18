@@ -134,3 +134,6 @@ env
 .env
 ENV
 .ENV
+
+# Mac
+.DS_Store

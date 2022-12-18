@@ -44,16 +44,19 @@ stages:
       #   displayName: Run Unit Tests
 
       - bash: |
+          cd frontend
           eas build --platform ios --profile buildForDetoxTesting --local
         displayName: Build .app for UI Testing on Azure MacOS Agent
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
       - bash: |
+          cd frontend
           eas build --platform ios --non-interactive --no-wait
         displayName: Run Build on EAS to have .app available on website too
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
       - bash: |
+          cd frontend
           expo publish --non-interactive
         displayName: Publish app to expo default channel
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))

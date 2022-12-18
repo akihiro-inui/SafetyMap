@@ -48,7 +48,7 @@ stages:
 
       - bash: |
           cd frontend
-          eas build --platform all --profile preview --local
+          eas build --platform all --profile preview
         displayName: Build iOS and Android for UI Testing on Azure MacOS Agent
         workingDirectory: '$(Build.Repository.LocalPath)/frontend'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))

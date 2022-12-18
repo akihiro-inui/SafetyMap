@@ -38,28 +38,33 @@ stages:
 
       - bash: yarn install --frozen-lockfile
         displayName: Yarn install
+        workingDirectory: '$(Build.Repository.LocalPath)/frontend'
 
       - bash: |
           set -x
           yarn test --watchAll=false
         displayName: Run Unit Tests
+        workingDirectory: '$(Build.Repository.LocalPath)/frontend'
 
       - bash: |
           cd frontend
           eas build --platform ios --profile preview --local
         displayName: Build .app for UI Testing on Azure MacOS Agent
+        workingDirectory: '$(Build.Repository.LocalPath)/frontend'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
       - bash: |
           cd frontend
           eas build --platform ios --non-interactive --no-wait
         displayName: Run Build on EAS to have .app available on website too
+        workingDirectory: '$(Build.Repository.LocalPath)/frontend'
         condition: and(succeeded(), eq(variables['BYuild.SourceBranch'], 'refs/heads/main'))
 
       - bash: |
           cd frontend
           expo publish --non-interactive
         displayName: Publish app to expo default channel
+        workingDirectory: '$(Build.Repository.LocalPath)/frontend'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
       - task: PublishTestResults@2

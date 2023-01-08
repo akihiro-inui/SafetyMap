@@ -1,6 +1,6 @@
 # SafetyMap
-This application visualizes the safey level of your location.    
-This repository involves the backend API and the frontend application.
+This application visualizes the safety level of your location.    
+This repository involves the backend API, data scraper and the frontend application.
 
 ## Build Status
 [![Build Status](https://dev.azure.com/SwiftAI/Safety%20Map/_apis/build/status/akihiro-inui.SafetyMap?branchName=main)](https://dev.azure.com/SwiftAI/Safety%20Map/_build/latest?definitionId=2&branchName=main)
@@ -10,15 +10,26 @@ This repository involves the backend API and the frontend application.
 
 ## Folder Structure
 ```bash
-├── docs
 ├── backend
 │   ├── src
 │   ├── tests
 │   ├── Dockerfile
-│   ├── README.md
+│   ├── setup.py
 │   ├── setup.cfg
-│   └── setup.py
-├── frontend
+│   └── README.md
+├── web
+│   ├── public
+│   ├── src
+│   │   ├── Components
+│   │   ├── App.css
+│   │   ├── App.js
+│   │   ├── index.css
+│   │   ├── index.js
+│   │   └── tests
+│   ├── package-lock.json
+│   ├── package.json
+│   └── README.md
+├── mobile
 │   ├── assets
 │   ├── components
 │   ├── constants
@@ -29,20 +40,30 @@ This repository involves the backend API and the frontend application.
 │   ├── App.tsx
 │   ├── package.json
 │   ├── package-lock.json
-│   ├── package.json
 │   ├── README.md
 │   └── eas.json
+├── scraper
+│   ├── src
+│   ├── tests
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── setup.cfg
+│   └── setup.py
 ├── .gitignore
 ├── azure_pipelines.yml
 └── README.md
 ```
 
-## Frontend
-Our frontend application is based on React Native and Expo.  
-Find the documentation [here](frontend/README.md)
+## Web Application
+Our web application is built with React.js.  
+Find the documentation [here](web/README.md)
+
+## Mobile Application
+Our mobile application is based on React Native and Expo.  
+Find the documentation [here](mobile/README.md)
 
 ## Backend
-Our backend API is based on Python FastAPI.  
+Our backend API is built with FastAPI.  
 Find the documentation [here](backend/README.md)
 
 ## Pipelines
